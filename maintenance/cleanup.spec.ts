@@ -5,9 +5,10 @@ import { test, expect, type Page } from '@playwright/test';
 // record would have to be deliberately named to look like one to be at risk.
 const AUTOMATION_NAME = /^PW [A-Za-z ]*\d{13}$/;
 
-// Destructive, so it is opt-in: CLEANUP=1 npx playwright test -c playwright.cleanup.config.ts
+// Destructive, so it is opt-in: `npm run cleanup:delete` sets CLEANUP=1, and
+// `npm run cleanup` pins CLEANUP=0 so the dry run stays dry whatever the shell has set.
 const ARMED = process.env.CLEANUP === '1';
-// Optional cap, applied per object: CLEANUP_LIMIT=6
+// Optional cap, applied per object: npx cross-env CLEANUP_LIMIT=6 npm run cleanup:delete
 const LIMIT = Number(process.env.CLEANUP_LIMIT) || Infinity;
 
 // Each object needs a list view that shows every record this suite can create, and
@@ -83,7 +84,7 @@ for (const obj of OBJECTS) {
     found.forEach((n) => console.log(`  - ${n}`));
 
     if (!ARMED) {
-      console.log(`[${obj.name}] DRY RUN — nothing deleted. Re-run with CLEANUP=1 to delete these.`);
+      console.log(`[${obj.name}] DRY RUN — nothing deleted. Re-run with \`npm run cleanup:delete\` to delete these.`);
       return;
     }
 

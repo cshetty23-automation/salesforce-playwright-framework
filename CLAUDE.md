@@ -10,13 +10,17 @@ could stay frozen while this one is refactored from a test suite into a framewor
 
 | Command | What it does |
 | --- | --- |
-| `npx playwright test` | All specs in `tests/`. **Writes real records** — see below. |
-| `npx playwright test tests/<file>.spec.ts` | One spec. |
-| `npx playwright test -c playwright.cleanup.config.ts` | Cleanup **dry run** — lists what it would delete. |
-| `CLEANUP=1 npx playwright test -c playwright.cleanup.config.ts` | **Deletes.** Add `-g "Opportunity"` to scope to one object, `CLEANUP_LIMIT=6` to cap. |
-| `npx tsx save-auth.ts` | Manual, headed re-auth. Log in by hand, press Enter. |
+| `npm test` | All specs in `tests/`. **Writes real records** — see below. |
+| `npm test -- tests/<file>.spec.ts` | One spec. |
+| `npm run cleanup` | Cleanup **dry run** — lists what it would delete. Forces `CLEANUP=0`, so a stray `CLEANUP=1` in the shell cannot arm it. |
+| `npm run cleanup:delete` | **Deletes.** `npm run cleanup:delete -- -g "Opportunity"` scopes to one object. |
+| `npx cross-env CLEANUP_LIMIT=6 npm run cleanup:delete` | Deletes at most 6 per object. |
+| `npm run auth` | Manual, headed re-auth. Log in by hand, press Enter. |
 
-There are no npm scripts yet — adding them is a planned change (see below).
+Everything after `--` goes straight to `playwright test`. The scripts set env vars through
+`cross-env` because npm runs scripts under `cmd.exe` on Windows, where `CLEANUP=1 cmd`
+is a syntax error. Use `npx cross-env` for ad-hoc vars too. `$env:X=…` in PowerShell
+stays set for the rest of the session.
 
 ## This suite writes to a live org
 

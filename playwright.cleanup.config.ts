@@ -6,7 +6,8 @@ import { ORG_URL } from './config/env';
  * Kept separate from playwright.config.ts so `npx playwright test` cannot pick
  * them up and run them concurrently with tests that create records.
  *
- *   npx playwright test -c playwright.cleanup.config.ts
+ *   npm run cleanup          dry run
+ *   npm run cleanup:delete   deletes
  */
 export default defineConfig({
   testDir: './maintenance',
