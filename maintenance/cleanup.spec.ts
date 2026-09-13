@@ -1,9 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
+import { MARKER, markersIn } from '../helpers/marker';
 
-// Records this suite creates are named `PW <label> <13-digit epoch>`.
-// Only names matching this exact shape are eligible for deletion — a real
-// record would have to be deliberately named to look like one to be at risk.
-const AUTOMATION_NAME = /^PW [A-Za-z ]*\d{13}$/;
+// Only names that are exactly a suite marker (helpers/marker.ts) are eligible for
+// deletion — a real record would have to be deliberately named to look like one to be at risk.
 
 // Destructive, so it is opt-in: `npm run cleanup:delete` sets CLEANUP=1, and
 // `npm run cleanup` pins CLEANUP=0 so the dry run stays dry whatever the shell has set.
@@ -69,8 +68,8 @@ async function findAutomationRecords(page: Page): Promise<string[]> {
   const grids = page.getByRole('grid');
   if (!(await grids.count())) return [];
   const text = (await grids.first().innerText()).replace(/\s+/g, ' ');
-  const candidates = new Set(text.match(/PW [A-Za-z ]*?\d{13}/g) ?? []);
-  return [...candidates].filter((name) => AUTOMATION_NAME.test(name)).sort();
+  const candidates = new Set(markersIn(text));
+  return [...candidates].filter((name) => MARKER.test(name)).sort();
 }
 
 for (const obj of OBJECTS) {

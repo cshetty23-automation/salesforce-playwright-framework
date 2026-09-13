@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { marker } from '../helpers/marker';
 
 test('create an Account filling only the mandatory field', async ({ page }) => {
   // Unique per run so repeat runs don't collide and the records stay traceable
-  const accountName = `PW Test Account ${Date.now()}`;
+  const accountName = marker('Test Account');
 
   await page.goto('/lightning/o/Account/list');
 

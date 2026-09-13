@@ -27,10 +27,12 @@ stays set for the rest of the session.
 `tests/new-account`, `new-lead`, `new-opportunity` and `new-contact` each create a real
 record on every run. Nothing is deleted automatically.
 
-Every record is named with the marker `PW <Label> <13-digit epoch>`, matched by
-`/^PW [A-Za-z ]*\d{13}$/` in `maintenance/cleanup.spec.ts`. Keep that convention for any
-new record-creating spec — it is the only thing that makes test data distinguishable
-from real data, and it is what cleanup searches on.
+Every record is named with the marker `PW <Label> <13-digit epoch>`, defined once in
+`helpers/marker.ts` (`MARKER`, `/^PW [A-Za-z ]*\d{13}$/`) and shared by the specs and
+cleanup. Any new record-creating spec must name its record with `marker('Test Thing')` —
+the marker is the only thing that makes test data distinguishable from real data, and
+it is what cleanup searches on. `marker()` throws on labels containing anything but
+letters and spaces, because those would produce names cleanup never finds.
 
 **Contact is deliberately not in cleanup's `OBJECTS`.** Contacts created by
 `new-contact.spec.ts` persist until deleted by hand.
@@ -109,6 +111,8 @@ Reports, `New Report` and `New Folder` are genuinely available.
 
 ## Testing conventions
 
+- Reach objects with `gotoObject(page, 'Lead')` from `helpers/nav.ts`. A new object
+  gets an entry in its table (menu label + readiness signal), not an inlined nav block.
 - Probe the real DOM before writing a selector. Do not guess accessible names.
 - `getByRole` with `exact: true`. No CSS selectors into Lightning internals.
 - **No `waitForTimeout`.** Wait for a real signal — a response, a count, an attribute.
@@ -128,14 +132,11 @@ Reports, `New Report` and `New Folder` are genuinely available.
 
 ## Planned work
 
-Config extraction is **done**. Remaining, in order:
+Done: config extraction; npm scripts (the table above); the helpers module —
+`helpers/nav.ts` (`gotoObject`) and `helpers/marker.ts` (`marker`, `MARKER`, `markersIn`).
+Remaining:
 
-1. **npm scripts** — encode the invocations in the table above so they stop being tribal
-   knowledge, especially the cleanup ones.
-2. **A fixtures/helpers module** — `gotoObject(page, 'Opportunity')` to replace the
-   nav-dropdown block copy-pasted into 6 specs, a `marker(label)` helper, and the marker
-   regex exported once so specs and cleanup share one definition instead of two.
-3. **Decide on CI** — `.github/workflows/playwright.yml` currently **cannot work**:
+1. **Decide on CI** — `.github/workflows/playwright.yml` currently **cannot work**:
    `playwright/.auth/` is gitignored so CI has no session, and re-auth needs an emailed
    code. Either wire up JWT bearer auth via a connected app, or inject a `storageState`
    secret, or delete the workflow. A pipeline that cannot pass is worse than none.

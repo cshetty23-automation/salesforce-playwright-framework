@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { gotoObject } from '../helpers/nav';
 
 // Expected sets captured from the org on 2026-09-13. Hardcoded on purpose: this spec
 // exists to notice when the Reports tab gains, loses or renames a view or a button, so
@@ -39,12 +40,7 @@ test('Reports exposes the expected views, buttons and links', async ({ page }) =
   test.setTimeout(180_000);
 
   await page.goto('/');
-
-  // Reports, via the console object navigation dropdown
-  await page.getByRole('button', { name: /show navigation menu/i }).click();
-  await page.getByRole('menuitem', { name: 'Reports', exact: true }).click();
-  await expect(page).toHaveURL(/\/lightning\/o\/Report\/home/, { timeout: 30_000 });
-  await expect(page.getByRole('region', { name: 'Reports' })).toBeVisible({ timeout: 60_000 });
+  await gotoObject(page, 'Report');
 
   // Guards the assumption every later assertion leans on: there is exactly one banner,
   // so scoping button checks to it is meaningful rather than accidentally page-wide.

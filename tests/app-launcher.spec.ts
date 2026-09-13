@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { gotoObject } from '../helpers/nav';
 
 test('app launcher > Sales Console > Accounts > All Accounts > New', async ({ page }) => {
   await page.goto('/');
@@ -9,10 +10,7 @@ test('app launcher > Sales Console > Accounts > All Accounts > New', async ({ pa
   await page.getByPlaceholder(/search apps and items/i).fill('Sales Console');
   await page.getByRole('option', { name: 'Sales Console' }).click();
 
-  // Accounts object, from the console navigation menu
-  await page.getByRole('button', { name: /show navigation menu/i }).click();
-  await page.getByRole('menuitem', { name: 'Accounts', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Accounts', exact: true })).toBeVisible();
+  await gotoObject(page, 'Account');
 
   // List view > All Accounts
   await page.getByRole('button', { name: /select a list view/i }).click();

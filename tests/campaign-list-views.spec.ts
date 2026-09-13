@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { gotoObject } from '../helpers/nav';
 
 // Expected sets captured from the org on 2026-09-13. They are hardcoded on purpose:
 // this spec exists to notice when the Campaigns page gains, loses or renames a list
@@ -40,14 +41,7 @@ const HEADER_BUTTONS = [
 
 test('Campaigns exposes the expected list views and header buttons', async ({ page }) => {
   await page.goto('/');
-
-  // Campaigns, via the console object navigation dropdown
-  await page.getByRole('button', { name: /show navigation menu/i }).click();
-  await page.getByRole('menuitem', { name: 'Campaigns', exact: true }).click();
-  await expect(page).toHaveURL(/\/lightning\/o\/Campaign\//, { timeout: 30_000 });
-  // exact:true — the view picker beside it is a second level-1 heading whose accessible
-  // name is "Campaigns <current view>".
-  await expect(page.getByRole('heading', { name: 'Campaigns', exact: true })).toBeVisible({ timeout: 30_000 });
+  await gotoObject(page, 'Campaign');
 
   // --- List views -------------------------------------------------------------
   await page.getByRole('button', { name: /select a list view/i }).click();
