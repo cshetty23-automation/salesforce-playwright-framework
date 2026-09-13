@@ -10,3 +10,9 @@ node_modules/
 
 # Secrets - never commit these
 .env
+
+# MCP snapshot/console dumps
+.playwright-mcp/
+
+# Local Claude Code settings
+.claude/settings.local.json
