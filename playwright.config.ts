@@ -1,12 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import { ORG_URL } from './config/env';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -25,8 +18,9 @@ export default defineConfig({
   reporter: [['html'], ['list']],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    /* The org under test, from SF_LOGIN_URL in .env. Specs navigate with root-relative
+       paths so the org appears in exactly one place in the repo. */
+    baseURL: ORG_URL,
     storageState: 'playwright/.auth/user.json',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

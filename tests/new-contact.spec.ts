@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const ORG_URL = 'https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com';
-
 test('create a Contact filling only the mandatory field', async ({ page }) => {
   // Last Name carries the marker: it is the only required input on the form, and it is
   // what the Contacts list views render in their Name column. Nothing cleans these up
@@ -10,7 +8,7 @@ test('create a Contact filling only the mandatory field', async ({ page }) => {
   // would let Contact be added to that suite later without renaming anything.
   const marker = `PW Test Contact ${Date.now()}`;
 
-  await page.goto(ORG_URL);
+  await page.goto('/');
 
   // Contacts, via the console object navigation dropdown
   await page.getByRole('button', { name: /show navigation menu/i }).click();

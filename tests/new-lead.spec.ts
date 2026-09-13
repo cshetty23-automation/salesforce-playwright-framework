@@ -1,13 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-const ORG_URL = 'https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com';
-
 test('create a Lead filling only the mandatory fields', async ({ page }) => {
   // Last Name carries the marker because it is what the Leads list renders in its
   // Name column, and that column is what tests/cleanup.spec.ts searches on.
   const marker = `PW Test Lead ${Date.now()}`;
 
-  await page.goto(ORG_URL);
+  await page.goto('/');
 
   // Leads, via the console object navigation dropdown
   await page.getByRole('button', { name: /show navigation menu/i }).click();

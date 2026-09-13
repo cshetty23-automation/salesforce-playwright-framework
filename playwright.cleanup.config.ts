@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { ORG_URL } from './config/env';
 
 /**
  * Config for the destructive maintenance scripts in ./maintenance.
@@ -17,6 +18,8 @@ export default defineConfig({
   // clobber the report from the last real test run.
   reporter: [['list']],
   use: {
+    // Same org as the test config, from the same single source in .env.
+    baseURL: ORG_URL,
     storageState: 'playwright/.auth/user.json',
     trace: 'on-first-retry',
   },

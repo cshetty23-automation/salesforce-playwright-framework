@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const ORG_URL = 'https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com';
-
 // Expected sets captured from the org on 2026-09-13. They are hardcoded on purpose:
 // this spec exists to notice when the Campaigns page gains, loses or renames a list
 // view or a button, so it has to compare against a fixed baseline rather than against
@@ -41,7 +39,7 @@ const HEADER_BUTTONS = [
 ];
 
 test('Campaigns exposes the expected list views and header buttons', async ({ page }) => {
-  await page.goto(ORG_URL);
+  await page.goto('/');
 
   // Campaigns, via the console object navigation dropdown
   await page.getByRole('button', { name: /show navigation menu/i }).click();

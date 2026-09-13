@@ -1,7 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
 
-const ORG_URL = 'https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com';
-
 // Records this suite creates are named `PW <label> <13-digit epoch>`.
 // Only names matching this exact shape are eligible for deletion — a real
 // record would have to be deliberately named to look like one to be at risk.
@@ -33,7 +31,7 @@ const OBJECTS = [
 // report a clean org that is not clean — the one direction of error a cleanup check
 // must never make.
 async function openFilteredList(page: Page, obj: { listUrl: string; listView: string }) {
-  await page.goto(ORG_URL + obj.listUrl);
+  await page.goto(obj.listUrl);
   await page.getByRole('button', { name: /select a list view/i }).click();
   await page.getByRole('option', { name: obj.listView, exact: true }).click();
   await page.getByPlaceholder(/search this list/i).fill('PW ');

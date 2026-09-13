@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const ORG_URL = 'https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com';
-
 test('create an Opportunity filling only the mandatory fields', async ({ page }) => {
   // Opportunity Name carries the marker: it is the first data column of the
   // Opportunity list views ("Opportunity Name", not "Name") and it is what the
@@ -19,7 +17,7 @@ test('create an Opportunity filling only the mandatory fields', async ({ page })
     close.getFullYear(),
   ].join('/');
 
-  await page.goto(ORG_URL);
+  await page.goto('/');
 
   // Opportunities, via the console object navigation dropdown
   await page.getByRole('button', { name: /show navigation menu/i }).click();

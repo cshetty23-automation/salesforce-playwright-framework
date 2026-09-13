@@ -1,12 +1,10 @@
 import { test, expect } from '@playwright/test';
 
-const ORG_URL = 'https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com';
-
 test('create an Account filling only the mandatory field', async ({ page }) => {
   // Unique per run so repeat runs don't collide and the records stay traceable
   const accountName = `PW Test Account ${Date.now()}`;
 
-  await page.goto(ORG_URL + '/lightning/o/Account/list');
+  await page.goto('/lightning/o/Account/list');
 
   await page.getByRole('button', { name: 'New', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'New Account' })).toBeVisible({ timeout: 30_000 });

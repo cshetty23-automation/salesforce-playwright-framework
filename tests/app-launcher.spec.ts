@@ -1,9 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-const ORG_URL = 'https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com';
-
 test('app launcher > Sales Console > Accounts > All Accounts > New', async ({ page }) => {
-  await page.goto(ORG_URL);
+  await page.goto('/');
   await expect(page).toHaveURL(/lightning/);
 
   // App launcher (the 9 dots)

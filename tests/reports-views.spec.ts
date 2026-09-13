@@ -1,7 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-const ORG_URL = 'https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com';
-
 // Expected sets captured from the org on 2026-09-13. Hardcoded on purpose: this spec
 // exists to notice when the Reports tab gains, loses or renames a view or a button, so
 // it compares against a fixed baseline rather than against whatever the page renders.
@@ -40,7 +38,7 @@ const VIEWS: Array<{ region: string; tab: string; scope: string; search: string 
 test('Reports exposes the expected views, buttons and links', async ({ page }) => {
   test.setTimeout(180_000);
 
-  await page.goto(ORG_URL);
+  await page.goto('/');
 
   // Reports, via the console object navigation dropdown
   await page.getByRole('button', { name: /show navigation menu/i }).click();

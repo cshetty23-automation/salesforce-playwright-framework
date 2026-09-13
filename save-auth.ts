@@ -1,10 +1,13 @@
 import { chromium } from '@playwright/test';
+import { ORG_URL } from './config/env';
 
 (async () => {
   const browser = await chromium.launch({ headless: false });
   const page = await browser.newPage();
 
-  await page.goto('https://orgfarm-979bcd26f7-dev-ed.develop.lightning.force.com');
+  // Standalone tsx script, so it reads the org from config/env rather than baseURL,
+  // which only exists inside a Playwright run.
+  await page.goto(ORG_URL);
 
   console.log('\n>>> Log in manually (username, password, email code).');
   console.log('>>> Get all the way to the Salesforce home page.');
