@@ -7,6 +7,10 @@ const API_VERSION = 'v67.0';
  * A REST client riding on the browser session the tests already have — no connected app,
  * token or second login to manage.
  *
+ * Nothing calls this at present: test records are deliberately kept, never deleted (see
+ * helpers/test.ts). It stays as the verified way to delete through the API, for when a
+ * delete option is wanted.
+ *
  * The API accepts only the `sid` cookie set for the org's my.salesforce.com host, and only
  * on that host. The sid cookies for lightning.force.com and file.force.com, and any request
  * sent to lightning.force.com (which is what baseURL points at), get 401 INVALID_SESSION_ID

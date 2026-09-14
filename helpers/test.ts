@@ -1,5 +1,4 @@
 import { test as base } from '@playwright/test';
-import { salesforceApi } from './api';
 import { Records } from './records';
 
 export { expect } from '@playwright/test';
@@ -7,29 +6,21 @@ export { expect } from '@playwright/test';
 /**
  * The suite's `test`: Playwright's, plus a `records` fixture for tests that create data.
  *
- * Records made with `records.create()` are deleted through the REST API once the test
- * passes. When it fails they are kept so they can be inspected in the org, and each one is
- * listed on the test result as a "kept record" annotation with a link to it. `npm run cleanup`
- * is still the sweep for those, and for anything a run killed before teardown left behind.
+ * Records made with `records.create()` are never deleted. Whether the test passes or fails
+ * they stay in the org, to be inspected or deleted by hand. So none go untracked, each one
+ * is listed on the test result as a "test record" annotation (HTML report) and printed in
+ * the terminal, with a link to it. `npm run cleanup` deletes Account, Lead and Opportunity
+ * records in bulk; Contacts have to be deleted by hand.
  */
 export const test = base.extend<{ records: Records }>({
   records: async ({ page, baseURL }, use, testInfo) => {
     const records = new Records(page);
     await use(records);
-    if (!records.created.length) return;
 
-    if (testInfo.status !== testInfo.expectedStatus) {
-      for (const { object, id, name } of records.created) {
-        const description = `${object} "${name}" — ${baseURL}/lightning/r/${object}/${id}/view`;
-        testInfo.annotations.push({ type: 'kept record', description });
-        console.log(`[kept record] ${description}`);
-      }
-      return;
-    }
-
-    const api = await salesforceApi(page.context());
-    for (const { object, id } of records.created) {
-      await api.deleteRecord(object, id);
+    for (const { object, id, name } of records.created) {
+      const description = `${object} "${name}" — ${baseURL}/lightning/r/${object}/${id}/view`;
+      testInfo.annotations.push({ type: 'test record', description });
+      console.log(`[test record, test ${testInfo.status}] ${description}`);
     }
   },
 });

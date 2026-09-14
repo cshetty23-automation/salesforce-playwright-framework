@@ -29,12 +29,12 @@ stays set for the rest of the session.
 `tests/new-account`, `new-lead`, `new-opportunity` and `new-contact` each create a real
 record on every run, through `records.create()` (`helpers/records.ts`).
 
-The `records` fixture in `helpers/test.ts` decides what happens to them:
-- **Test passed** → each record is deleted through the REST API in teardown.
-- **Test failed** → records are **kept** for inspection, and each is listed on the result as
-  a `kept record` annotation (HTML report, and printed in the terminal) with a link.
-- A run killed before teardown, or a failure before the record's id was read, leaves records
-  unlisted. `npm run cleanup` is the sweep for those and for kept ones.
+**Nothing deletes them — pass or fail.** This is deliberate: records are kept for
+inspection and deleted by hand. The `records` fixture in `helpers/test.ts` lists every
+record a test created on its result, as a `test record` annotation (HTML report, and
+printed in the terminal) with a link. A run killed before teardown, or a failure before
+the record's id was read, leaves records unlisted. `npm run cleanup` finds and deletes
+Account, Lead and Opportunity records in bulk.
 
 Deleted records go to the Recycle Bin, not away for good.
 
@@ -47,8 +47,8 @@ the marker is the only thing that makes test data distinguishable from real data
 it is what cleanup searches on. `marker()` throws on labels containing anything but
 letters and spaces, because those would produce names cleanup never finds.
 
-**Contact is deliberately not in cleanup's `OBJECTS`.** A Contact kept by a failed run of
-`new-contact.spec.ts` persists until deleted by hand.
+**Contact is deliberately not in cleanup's `OBJECTS`.** Contacts created by
+`new-contact.spec.ts` persist until deleted by hand.
 
 Cleanup is opt-in (`CLEANUP=1`), caps deletions with `CLEANUP_LIMIT`, and verifies by
 re-reading a fresh filtered list rather than trusting the on-screen DOM.
@@ -138,7 +138,8 @@ cookies, and *any* request to `lightning.force.com` (what `baseURL` is), return 
 **Deleting through the UI needs the right wait.** After confirming Delete, wait for the
 console to close the record's tab (the detail URL goes away) — that only happens once the
 server confirms. Waiting for the dialog to close lets the context tear down mid-request and
-the record silently survives. Teardown uses the API instead, which answers 204 or fails.
+the record silently survives. `helpers/api.ts` deletes through the API instead (204 or an
+error) — though nothing calls it while test records are kept.
 
 ## Testing conventions
 
@@ -177,7 +178,7 @@ the record silently survives. Teardown uses the API instead, which answers 204 o
 Done: config extraction; npm scripts (the table above); the helpers module —
 `helpers/nav.ts` (`gotoObject`) and `helpers/marker.ts` (`marker`, `MARKER`, `markersIn`);
 the session setup check; `npm run check`; `@writes` tagging; shared config defaults;
-self-cleaning record tests (`records` fixture — passed deletes, failed keeps).
+record tests via `records.create()` (records are kept and listed, never deleted).
 Remaining:
 
 1. **Decide on CI** — `.github/workflows/playwright.yml` currently **cannot work**:
