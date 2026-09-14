@@ -1,7 +1,7 @@
 import { chromium } from '@playwright/test';
 import { AUTH_FILE, ORG_URL } from './config/env';
 
-(async () => {
+async function main() {
   const browser = await chromium.launch({ headless: false });
   const page = await browser.newPage();
 
@@ -22,4 +22,11 @@ import { AUTH_FILE, ORG_URL } from './config/env';
   console.log(`\n✅ Session saved to ${AUTH_FILE}\n`);
 
   await browser.close();
-})();
+}
+
+// process.exit rather than exitCode: on failure the headed browser is still open and would
+// keep the process alive, leaving the terminal hanging on an error it has already printed.
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

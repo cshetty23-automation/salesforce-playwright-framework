@@ -16,6 +16,7 @@ could stay frozen while this one is refactored from a test suite into a framewor
 | `npm run cleanup:delete` | **Deletes.** `npm run cleanup:delete -- -g "Opportunity"` scopes to one object. |
 | `npx cross-env CLEANUP_LIMIT=6 npm run cleanup:delete` | Deletes at most 6 per object. |
 | `npm run auth` | Manual, headed re-auth. Log in by hand, press Enter. |
+| `npm run check` | Typecheck (`strict`) + lint, **offline** — no org needed. Run before committing. |
 
 Everything after `--` goes straight to `playwright test`. The scripts set env vars through
 `cross-env` because npm runs scripts under `cmd.exe` on Windows, where `CLEANUP=1 cmd`
@@ -129,7 +130,9 @@ Reports, `New Report` and `New Folder` are genuinely available.
 
 ## Environment
 
-- Windows. `python` is **not** on PATH. `typescript`/`tsc` is **not** installed locally.
+- Windows. `python` is **not** on PATH. TypeScript and ESLint are local dev dependencies;
+  `eslint.config.mjs` enforces the testing conventions above (no `waitForTimeout`, no
+  `force`, no un-awaited promises) as errors, and warnings also fail `npm run lint`.
 - Heredocs and `perl -pi` mangle backslashes in regexes — `\d` silently became `d` twice.
   Prefer the editing tools over shell string surgery on files containing regexes.
 - The MCP Playwright server is configured in `.mcp.json` and is project-scoped: a new

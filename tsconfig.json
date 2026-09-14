@@ -2,7 +2,15 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "commonjs",
-    "lib": ["ESNext"],
-    "types": ["node", "@playwright/test"]
-  }
+    // DOM because Playwright's own type declarations reference HTMLElement and friends.
+    "lib": ["ESNext", "DOM"],
+    "types": ["node", "@playwright/test"],
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    // Type checking only — Playwright and tsx compile the TypeScript themselves.
+    "noEmit": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "test-results", "playwright-report", "cleanup-results"]
 }

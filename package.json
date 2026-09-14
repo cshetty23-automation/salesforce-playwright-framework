@@ -7,7 +7,10 @@
     "test": "playwright test",
     "cleanup": "cross-env CLEANUP=0 playwright test -c playwright.cleanup.config.ts",
     "cleanup:delete": "cross-env CLEANUP=1 playwright test -c playwright.cleanup.config.ts",
-    "auth": "tsx save-auth.ts"
+    "auth": "tsx save-auth.ts",
+    "typecheck": "tsc",
+    "lint": "eslint . --max-warnings 0",
+    "check": "npm run typecheck && npm run lint"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +19,11 @@
     "@playwright/test": "^1.63.0",
     "@types/node": "^22.20.2",
     "cross-env": "^10.1.0",
-    "tsx": "^4.23.13"
+    "eslint": "^10.10.0",
+    "eslint-plugin-playwright": "^2.12.0",
+    "tsx": "^4.23.13",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0"
   },
   "dependencies": {
     "dotenv": "^17.4.2"
