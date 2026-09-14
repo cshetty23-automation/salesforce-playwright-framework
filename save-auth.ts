@@ -1,5 +1,5 @@
 import { chromium } from '@playwright/test';
-import { ORG_URL } from './config/env';
+import { AUTH_FILE, ORG_URL } from './config/env';
 
 (async () => {
   const browser = await chromium.launch({ headless: false });
@@ -18,8 +18,8 @@ import { ORG_URL } from './config/env';
     process.stdin.once('data', () => resolve());
   });
 
-  await page.context().storageState({ path: 'playwright/.auth/user.json' });
-  console.log('\n✅ Session saved to playwright/.auth/user.json\n');
+  await page.context().storageState({ path: AUTH_FILE });
+  console.log(`\n✅ Session saved to ${AUTH_FILE}\n`);
 
   await browser.close();
 })();

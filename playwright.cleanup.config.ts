@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { ORG_URL } from './config/env';
+import { ORG_URL, savedSession } from './config/env';
 
 /**
  * Config for the destructive maintenance scripts in ./maintenance.
@@ -21,13 +21,21 @@ export default defineConfig({
   use: {
     // Same org as the test config, from the same single source in .env.
     baseURL: ORG_URL,
-    storageState: 'playwright/.auth/user.json',
+    storageState: savedSession(),
     trace: 'on-first-retry',
   },
   projects: [
+    // Same session check as the test config, so an expired session fails before cleanup starts.
+    {
+      name: 'session',
+      testDir: './setup',
+      testMatch: /session\.setup\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+    },
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      dependencies: ['session'],
     },
   ],
 });

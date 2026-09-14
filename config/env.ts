@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
@@ -30,6 +31,16 @@ function required(name: string): string {
  * login-specific endpoint.
  */
 export const ORG_URL = required('SF_LOGIN_URL');
+
+/** Where save-auth.ts writes the logged-in session and both configs read it from. Gitignored. */
+export const AUTH_FILE = path.resolve(__dirname, '..', 'playwright', '.auth', 'user.json');
+
+/**
+ * AUTH_FILE, or undefined when no session has ever been saved. Pointing storageState at a
+ * missing file fails every browser context with a bare ENOENT; starting logged out instead
+ * lets the session check in setup/ report it along with the fix.
+ */
+export const savedSession = (): string | undefined => (fs.existsSync(AUTH_FILE) ? AUTH_FILE : undefined);
 
 /** Credentials for the two-step login in save-auth.ts. Not used by specs, which run off saved storage state. */
 export const SF_USERNAME = (): string => required('SF_USERNAME');

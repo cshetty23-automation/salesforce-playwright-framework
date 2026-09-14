@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { ORG_URL } from './config/env';
+import { ORG_URL, savedSession } from './config/env';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -21,15 +21,23 @@ export default defineConfig({
     /* The org under test, from SF_LOGIN_URL in .env. Specs navigate with root-relative
        paths so the org appears in exactly one place in the repo. */
     baseURL: ORG_URL,
-    storageState: 'playwright/.auth/user.json',
+    storageState: savedSession(),
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
   /* Configure projects for major browsers */
   projects: [
+    // Checks the saved session once before any spec runs; see setup/session.setup.ts.
+    {
+      name: 'session',
+      testDir: './setup',
+      testMatch: /session\.setup\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+    },
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      dependencies: ['session'],
     },
 
     /*

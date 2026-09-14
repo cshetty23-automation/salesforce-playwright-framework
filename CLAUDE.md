@@ -56,8 +56,13 @@ Specs never log in. They run off saved storage state at `playwright/.auth/user.j
 set via `use.storageState` in both configs.
 
 - The session dies on the org's **inactivity timeout** (a couple of hours), not on a
-  fixed date. Symptom: every spec times out looking for a Lightning element, and the
-  saved page shows `heading "Salesforce login"`.
+  fixed date. Both configs run a `session` setup project (`setup/session.setup.ts`) first:
+  if `/` renders `heading "Salesforce login"` instead of Lightning, the run stops with one
+  failure telling you to run `npm run auth`, and every spec shows as "did not run". A
+  missing `user.json` produces the same message (`savedSession()` in `config/env.ts`
+  starts contexts logged out rather than failing on the missing file).
+- Logged out, the org serves the login form at the **same root URL** — no redirect — so
+  the URL cannot distinguish logged-in from logged-out. Check what rendered.
 - Login is **two-step**: `#username` → `#Login` → `#password` appears → `#Login`. The
   password field does not exist in the DOM until the username is submitted.
 - The org then demands an **emailed verification code** (`#emc`) unless the saved state
