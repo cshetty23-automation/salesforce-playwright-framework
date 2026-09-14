@@ -20,6 +20,6 @@ test('create a Lead filling only the mandatory fields', { tag: '@writes' }, asyn
   await page.getByRole('button', { name: 'Save', exact: true }).click();
 
   // Saving lands on the new record's detail page
-  await expect(page).toHaveURL(/\/lightning\/r\/Lead\/\w+\/view/, { timeout: 30_000 });
+  await expect(page).toHaveURL(/\/lightning\/r\/Lead\/\w+\/view/);
   await expect(page.getByRole('heading', { name })).toBeVisible();
 });

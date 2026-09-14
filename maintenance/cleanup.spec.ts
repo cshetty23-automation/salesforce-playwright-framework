@@ -49,7 +49,7 @@ async function openFilteredList(page: Page, obj: { listUrl: string; listView: st
   // Then hold until the rendered rows agree with the count the list reports, so the
   // scrape cannot read a half-rendered grid.
   const status = page.getByRole('status', { name: obj.listView });
-  await expect(status).toContainText(/\d+ items?/, { timeout: 30_000 });
+  await expect(status).toContainText(/\d+ items?/);
   await expect
     .poll(async () => {
       const n = Number(((await status.innerText()).match(/(\d+) items?/) ?? [])[1] ?? -1);
@@ -101,7 +101,7 @@ for (const obj of OBJECTS) {
       // Paces the loop so the next row menu isn't clicked mid-render. Note this is NOT
       // proof of deletion — the row also vanishes transiently while the list re-renders.
       // The poll below is the authoritative check.
-      await expect(row).toHaveCount(0, { timeout: 30_000 });
+      await expect(row).toHaveCount(0);
       console.log(`  deleted: ${name}`);
     }
 

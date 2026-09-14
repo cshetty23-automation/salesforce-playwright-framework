@@ -1,5 +1,5 @@
-import { defineConfig, devices } from '@playwright/test';
-import { ORG_URL, savedSession } from './config/env';
+import { defineConfig } from '@playwright/test';
+import { base } from './config/playwright.base';
 
 /**
  * Config for the destructive maintenance scripts in ./maintenance.
@@ -8,8 +8,11 @@ import { ORG_URL, savedSession } from './config/env';
  *
  *   npm run cleanup          dry run
  *   npm run cleanup:delete   deletes
+ *
+ * Org, session, timeouts, failure evidence and projects come from config/playwright.base.ts.
  */
 export default defineConfig({
+  ...base,
   testDir: './maintenance',
   // Serial: deletions should be deterministic and readable in the log, and two
   // workers racing over the same org buys nothing here.
@@ -18,24 +21,7 @@ export default defineConfig({
   // List only — the html reporter writes to playwright-report/, which would
   // clobber the report from the last real test run.
   reporter: [['list']],
-  use: {
-    // Same org as the test config, from the same single source in .env.
-    baseURL: ORG_URL,
-    storageState: savedSession(),
-    trace: 'on-first-retry',
-  },
-  projects: [
-    // Same session check as the test config, so an expired session fails before cleanup starts.
-    {
-      name: 'session',
-      testDir: './setup',
-      testMatch: /session\.setup\.ts/,
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-      dependencies: ['session'],
-    },
-  ],
+  // Same reason for traces and screenshots: a test run empties test-results/ when it starts,
+  // so cleanup's failure evidence gets a folder of its own.
+  outputDir: './cleanup-results',
 });

@@ -19,6 +19,6 @@ test('app launcher > Sales Console > Accounts > All Accounts > New', async ({ pa
 
   // New — in the console app this opens a new workspace tab, not a modal
   await page.getByRole('button', { name: 'New', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'New Account' })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole('heading', { name: 'New Account' })).toBeVisible();
   await expect(page.getByRole('textbox', { name: /account name/i })).toBeVisible();
 });

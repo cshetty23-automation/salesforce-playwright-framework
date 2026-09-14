@@ -47,7 +47,9 @@ re-reading a fresh filtered list rather than trusting the on-screen DOM.
 ## Configuration
 
 The org lives in exactly one place: `SF_LOGIN_URL` in `.env` (see `.env.example`).
-`config/env.ts` reads it and both Playwright configs set it as `use.baseURL`, so **specs
+`config/env.ts` reads it and `config/playwright.base.ts` — the shared base both Playwright
+configs spread, holding the session, timeouts, trace settings and projects — sets it as
+`use.baseURL`, so **specs
 navigate with root-relative paths** — `page.goto('/')`, `page.goto('/lightning/o/Account/list')`.
 Never reintroduce a hardcoded org URL.
 
@@ -56,8 +58,8 @@ neither and cannot run.
 
 ## Authentication
 
-Specs never log in. They run off saved storage state at `playwright/.auth/user.json`,
-set via `use.storageState` in both configs.
+Specs never log in. They run off saved storage state at `playwright/.auth/user.json`
+(`AUTH_FILE`), set via `use.storageState` in `config/playwright.base.ts`.
 
 - The session dies on the org's **inactivity timeout** (a couple of hours), not on a
   fixed date. Both configs run a `session` setup project (`setup/session.setup.ts`) first:
@@ -125,6 +127,12 @@ Reports, `New Report` and `New Folder` are genuinely available.
 - Probe the real DOM before writing a selector. Do not guess accessible names.
 - `getByRole` with `exact: true`. No CSS selectors into Lightning internals.
 - **No `waitForTimeout`.** Wait for a real signal — a response, a count, an attribute.
+- **Timeouts live in `config/playwright.base.ts`:** 30s per assertion and action, 60s per
+  navigation, 90s per test. Pass `{ timeout }` only for a signal known to be slower than
+  that (a record form opening, a Reports view's item count), never a restated 30s.
+- Every failure keeps a trace and screenshot. Open one with the HTML report
+  (`npx playwright show-report`) or `npx playwright show-trace <dir>/trace.zip`. Test runs
+  write to `test-results/`, cleanup to `cleanup-results/`.
 - For presence/absence suites, assert **both** a count and each name: the count catches
   additions, the names catch removals and renames. Prove the assertion can fail by
   breaking an expected value before trusting a green run.

@@ -65,8 +65,8 @@ test('Reports exposes the expected views, buttons and links', async ({ page }) =
       const tab = page.getByRole('region', { name: view.region }).getByRole('tab', { name: view.tab, exact: true });
       await tab.click();
 
-      await expect(page).toHaveURL(new RegExp(`queryScope=${view.scope}(\\b|$)`), { timeout: 30_000 });
-      await expect(tab).toHaveAttribute('aria-selected', 'true', { timeout: 30_000 });
+      await expect(page).toHaveURL(new RegExp(`queryScope=${view.scope}(\\b|$)`));
+      await expect(tab).toHaveAttribute('aria-selected', 'true');
       await expect(page.getByRole('navigation', { name: 'Breadcrumbs' })).toContainText(view.tab);
 
       // The item count is the view telling us its own query came back. Without it the
@@ -74,7 +74,7 @@ test('Reports exposes the expected views, buttons and links', async ({ page }) =
       // probe of this page reported empty views that in fact hold 30 records.
       await expect(banner.getByRole('status')).toContainText(/\d+ items?/, { timeout: 60_000 });
 
-      await expect(banner.getByRole('textbox')).toHaveAttribute('placeholder', view.search, { timeout: 30_000 });
+      await expect(banner.getByRole('textbox')).toHaveAttribute('placeholder', view.search);
 
       await expect(banner.getByRole('button')).toHaveCount(HEADER_BUTTONS.length);
       for (const name of HEADER_BUTTONS) {

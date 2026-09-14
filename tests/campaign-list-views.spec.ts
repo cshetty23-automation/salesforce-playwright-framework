@@ -46,7 +46,7 @@ test('Campaigns exposes the expected list views and header buttons', async ({ pa
   // --- List views -------------------------------------------------------------
   await page.getByRole('button', { name: /select a list view/i }).click();
   const options = page.getByRole('option');
-  await expect(options).toHaveCount(LIST_VIEWS.length, { timeout: 30_000 });
+  await expect(options).toHaveCount(LIST_VIEWS.length);
 
   // Matched by accessible name rather than text content: the option labels live in shadow
   // DOM and allTextContents() comes back empty. Each name is checked independently of
@@ -68,15 +68,15 @@ test('Campaigns exposes the expected list views and header buttons', async ({ pa
   // and Filters are disabled, and "Column sort" is instead named "Column sort is
   // disabled. To sort columns, a list view needs at least one row and two columns."
   await page.getByRole('option', { name: 'All Active Campaigns', exact: true }).click();
-  await expect(page).toHaveURL(/filterName=AllActiveCampaigns/, { timeout: 30_000 });
-  await expect(page.getByRole('status', { name: 'All Active Campaigns' })).toContainText(/\d+ items?/, { timeout: 30_000 });
+  await expect(page).toHaveURL(/filterName=AllActiveCampaigns/);
+  await expect(page.getByRole('status', { name: 'All Active Campaigns' })).toContainText(/\d+ items?/);
 
   const header = page.locator('.slds-page-header').first();
 
   // The count is what makes this fail on an *added* button; the per-name checks are what
   // make it fail on a removed or renamed one. Printable View renders a beat after the
   // rest of the header, which the retry on toHaveCount absorbs.
-  await expect(header.getByRole('button')).toHaveCount(HEADER_BUTTONS.length, { timeout: 30_000 });
+  await expect(header.getByRole('button')).toHaveCount(HEADER_BUTTONS.length);
   for (const name of HEADER_BUTTONS) {
     await expect(header.getByRole('button', { name, exact: true })).toHaveCount(1);
   }

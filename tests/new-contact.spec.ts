@@ -26,6 +26,6 @@ test('create a Contact filling only the mandatory field', { tag: '@writes' }, as
   await page.getByRole('button', { name: 'Save', exact: true }).click();
 
   // Saving lands on the new record's detail page
-  await expect(page).toHaveURL(/\/lightning\/r\/Contact\/\w+\/view/, { timeout: 30_000 });
+  await expect(page).toHaveURL(/\/lightning\/r\/Contact\/\w+\/view/);
   await expect(page.getByRole('heading', { name, exact: true })).toBeVisible();
 });

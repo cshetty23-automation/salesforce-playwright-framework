@@ -8,14 +8,14 @@ test('create an Account filling only the mandatory field', { tag: '@writes' }, a
   await page.goto('/lightning/o/Account/list');
 
   await page.getByRole('button', { name: 'New', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'New Account' })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole('heading', { name: 'New Account' })).toBeVisible();
 
   // Account Name is the only field marked required on this form
   await page.getByRole('textbox', { name: /account name/i }).fill(accountName);
   await page.getByRole('button', { name: 'Save', exact: true }).click();
 
   // Saving lands on the new record's detail page
-  await expect(page).toHaveURL(/\/lightning\/r\/Account\/\w+\/view/, { timeout: 30_000 });
+  await expect(page).toHaveURL(/\/lightning\/r\/Account\/\w+\/view/);
   await expect(page.getByRole('heading', { name: accountName })).toBeVisible();
 
   // --- Cleanup: uncomment the four lines below to delete the record this test creates ---
@@ -26,5 +26,5 @@ test('create an Account filling only the mandatory field', { tag: '@writes' }, a
   // await page.getByRole('button', { name: 'Show more actions' }).click();
   // await page.getByRole('menuitem', { name: 'Delete', exact: true }).click();
   // await page.getByRole('dialog').getByRole('button', { name: 'Delete', exact: true }).click();
-  // await expect(page).not.toHaveURL(/\/lightning\/r\/Account\/\w+\/view/, { timeout: 30_000 });
+  // await expect(page).not.toHaveURL(/\/lightning\/r\/Account\/\w+\/view/);
 });

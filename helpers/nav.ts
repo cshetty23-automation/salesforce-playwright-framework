@@ -31,7 +31,7 @@ export async function gotoObject(page: Page, object: SalesforceObject): Promise<
 
   // Matches the object, not a list path: Contact opens its Intelligence View at
   // /lightning/o/Contact/pipelineInspection and Reports opens /lightning/o/Report/home.
-  await expect(page).toHaveURL(new RegExp(`/lightning/o/${object}/`), { timeout: 30_000 });
+  await expect(page).toHaveURL(new RegExp(`/lightning/o/${object}/`));
 
   // The URL flips before the page renders, and every object page has a New button with the
   // same accessible name. Without this wait, New can be clicked while the console still
