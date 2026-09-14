@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { marker } from '../helpers/marker';
 import { gotoObject } from '../helpers/nav';
 
-test('create a Contact filling only the mandatory field', async ({ page }) => {
+test('create a Contact filling only the mandatory field', { tag: '@writes' }, async ({ page }) => {
   // Last Name carries the marker: it is the only required input on the form, and it is
   // what the Contacts list views render in their Name column. Nothing cleans these up
   // automatically — Contact is deliberately not in maintenance/cleanup.spec.ts — so the

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:readonly": "playwright test --grep-invert @writes",
     "cleanup": "cross-env CLEANUP=0 playwright test -c playwright.cleanup.config.ts",
     "cleanup:delete": "cross-env CLEANUP=1 playwright test -c playwright.cleanup.config.ts",
     "auth": "tsx save-auth.ts",

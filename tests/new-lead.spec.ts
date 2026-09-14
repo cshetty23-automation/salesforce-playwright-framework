@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { marker } from '../helpers/marker';
 import { gotoObject } from '../helpers/nav';
 
-test('create a Lead filling only the mandatory fields', async ({ page }) => {
+test('create a Lead filling only the mandatory fields', { tag: '@writes' }, async ({ page }) => {
   // Last Name carries the marker because it is what the Leads list renders in its
   // Name column, and that column is what maintenance/cleanup.spec.ts searches on.
   const name = marker('Test Lead');

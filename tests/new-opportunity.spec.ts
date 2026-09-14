@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { marker } from '../helpers/marker';
 import { gotoObject } from '../helpers/nav';
 
-test('create an Opportunity filling only the mandatory fields', async ({ page }) => {
+test('create an Opportunity filling only the mandatory fields', { tag: '@writes' }, async ({ page }) => {
   // Opportunity Name carries the marker: it is the first data column of the
   // Opportunity list views ("Opportunity Name", not "Name") and it is what the
   // list's own search box matches on, which is how maintenance/cleanup.spec.ts

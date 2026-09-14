@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { marker } from '../helpers/marker';
 
-test('create an Account filling only the mandatory field', async ({ page }) => {
+test('create an Account filling only the mandatory field', { tag: '@writes' }, async ({ page }) => {
   // Unique per run so repeat runs don't collide and the records stay traceable
   const accountName = marker('Test Account');
 

@@ -12,6 +12,7 @@ could stay frozen while this one is refactored from a test suite into a framewor
 | --- | --- |
 | `npm test` | All specs in `tests/`. **Writes real records** — see below. |
 | `npm test -- tests/<file>.spec.ts` | One spec. |
+| `npm run test:readonly` | Every spec except those tagged `@writes`. Creates nothing in the org. |
 | `npm run cleanup` | Cleanup **dry run** — lists what it would delete. Forces `CLEANUP=0`, so a stray `CLEANUP=1` in the shell cannot arm it. |
 | `npm run cleanup:delete` | **Deletes.** `npm run cleanup:delete -- -g "Opportunity"` scopes to one object. |
 | `npx cross-env CLEANUP_LIMIT=6 npm run cleanup:delete` | Deletes at most 6 per object. |
@@ -30,7 +31,9 @@ record on every run. Nothing is deleted automatically.
 
 Every record is named with the marker `PW <Label> <13-digit epoch>`, defined once in
 `helpers/marker.ts` (`MARKER`, `/^PW [A-Za-z ]*\d{13}$/`) and shared by the specs and
-cleanup. Any new record-creating spec must name its record with `marker('Test Thing')` —
+cleanup. Any new record-creating spec must be tagged `{ tag: '@writes' }` (so
+`test:readonly` skips it — `marker()` throws in an untagged test) and name its record with
+`marker('Test Thing')` —
 the marker is the only thing that makes test data distinguishable from real data, and
 it is what cleanup searches on. `marker()` throws on labels containing anything but
 letters and spaces, because those would produce names cleanup never finds.
