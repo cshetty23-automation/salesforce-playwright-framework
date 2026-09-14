@@ -29,8 +29,11 @@ export default defineConfig(
       'playwright/no-force-option': 'error',
       'playwright/no-focused-test': 'error',
       'playwright/no-page-pause': 'error',
-      // gotoObject asserts that the page rendered, so a test that only navigates still asserts something.
-      'playwright/expect-expect': ['error', { assertFunctionNames: ['gotoObject'] }],
+      // These helpers assert internally — gotoObject that the page rendered, records.create that
+      // the record saved — so a test built from them still asserts something. The rule compares
+      // only the final method name, never the object, so `records.create` has to be listed as
+      // plain `create`.
+      'playwright/expect-expect': ['error', { assertFunctionNames: ['gotoObject', 'create'] }],
     },
   },
 

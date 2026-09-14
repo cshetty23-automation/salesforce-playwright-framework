@@ -27,7 +27,16 @@ stays set for the rest of the session.
 ## This suite writes to a live org
 
 `tests/new-account`, `new-lead`, `new-opportunity` and `new-contact` each create a real
-record on every run. Nothing is deleted automatically.
+record on every run, through `records.create()` (`helpers/records.ts`).
+
+The `records` fixture in `helpers/test.ts` decides what happens to them:
+- **Test passed** → each record is deleted through the REST API in teardown.
+- **Test failed** → records are **kept** for inspection, and each is listed on the result as
+  a `kept record` annotation (HTML report, and printed in the terminal) with a link.
+- A run killed before teardown, or a failure before the record's id was read, leaves records
+  unlisted. `npm run cleanup` is the sweep for those and for kept ones.
+
+Deleted records go to the Recycle Bin, not away for good.
 
 Every record is named with the marker `PW <Label> <13-digit epoch>`, defined once in
 `helpers/marker.ts` (`MARKER`, `/^PW [A-Za-z ]*\d{13}$/`) and shared by the specs and
@@ -38,8 +47,8 @@ the marker is the only thing that makes test data distinguishable from real data
 it is what cleanup searches on. `marker()` throws on labels containing anything but
 letters and spaces, because those would produce names cleanup never finds.
 
-**Contact is deliberately not in cleanup's `OBJECTS`.** Contacts created by
-`new-contact.spec.ts` persist until deleted by hand.
+**Contact is deliberately not in cleanup's `OBJECTS`.** A Contact kept by a failed run of
+`new-contact.spec.ts` persists until deleted by hand.
 
 Cleanup is opt-in (`CLEANUP=1`), caps deletions with `CLEANUP_LIMIT`, and verifies by
 re-reading a fresh filtered list rather than trusting the on-screen DOM.
@@ -120,8 +129,22 @@ this user lacks Create on Campaign (the Marketing User flag) — confirmed by hi
 `/lightning/o/Campaign/new` and getting "you don't have the necessary privileges". On
 Reports, `New Report` and `New Folder` are genuinely available.
 
+**The REST API lives on the my.salesforce.com host, not the Lightning one.** The browser
+session is API-capable, but only as the `sid` cookie set for `*.my.salesforce.com`, sent as
+`Authorization: Bearer` to that same host. The `lightning.force.com` and `file.force.com` sid
+cookies, and *any* request to `lightning.force.com` (what `baseURL` is), return 401
+`INVALID_SESSION_ID` while the UI works fine. `helpers/api.ts` encodes this.
+
+**Deleting through the UI needs the right wait.** After confirming Delete, wait for the
+console to close the record's tab (the detail URL goes away) — that only happens once the
+server confirms. Waiting for the dialog to close lets the context tear down mid-request and
+the record silently survives. Teardown uses the API instead, which answers 204 or fails.
+
 ## Testing conventions
 
+- Import `test` and `expect` from `helpers/test.ts`, not `@playwright/test`, so the
+  `records` fixture is available. Create records with `records.create('Lead', { … })`
+  (a string fills a textbox, `{ option }` picks from a combobox), never an inlined form.
 - Reach objects with `gotoObject(page, 'Lead')` from `helpers/nav.ts`. A new object
   gets an entry in its table (menu label + readiness signal), not an inlined nav block.
 - Probe the real DOM before writing a selector. Do not guess accessible names.
@@ -152,7 +175,9 @@ Reports, `New Report` and `New Folder` are genuinely available.
 ## Planned work
 
 Done: config extraction; npm scripts (the table above); the helpers module —
-`helpers/nav.ts` (`gotoObject`) and `helpers/marker.ts` (`marker`, `MARKER`, `markersIn`).
+`helpers/nav.ts` (`gotoObject`) and `helpers/marker.ts` (`marker`, `MARKER`, `markersIn`);
+the session setup check; `npm run check`; `@writes` tagging; shared config defaults;
+self-cleaning record tests (`records` fixture — passed deletes, failed keeps).
 Remaining:
 
 1. **Decide on CI** — `.github/workflows/playwright.yml` currently **cannot work**:
