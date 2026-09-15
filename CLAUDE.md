@@ -13,6 +13,7 @@ could stay frozen while this one is refactored from a test suite into a framewor
 | `npm test` | All specs in `tests/`. **Writes real records** — see below. |
 | `npm test -- tests/<file>.spec.ts` | One spec. |
 | `npm run test:readonly` | Every spec except those tagged `@writes`. Creates nothing in the org. |
+| `npm run records` | Lists every `PW` test record (all four objects, Contact included) with links, via the REST API. Read-only, seconds. |
 | `npm run cleanup` | Cleanup **dry run** — lists what it would delete. Forces `CLEANUP=0`, so a stray `CLEANUP=1` in the shell cannot arm it. |
 | `npm run cleanup:delete` | **Deletes.** `npm run cleanup:delete -- -g "Opportunity"` scopes to one object. |
 | `npx cross-env CLEANUP_LIMIT=6 npm run cleanup:delete` | Deletes at most 6 per object. |
