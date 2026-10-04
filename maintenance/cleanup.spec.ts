@@ -1,4 +1,5 @@
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../helpers/test';
 import { MARKER, markersIn } from '../helpers/marker';
 
 // Only names that are exactly a suite marker (helpers/marker.ts) are eligible for

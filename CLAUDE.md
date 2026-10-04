@@ -85,8 +85,10 @@ Specs never log in. They run off saved storage state at `playwright/.auth/user.j
   carries a device-trust cookie. It currently does — "Don't ask again" was ticked — so
   re-auth with username + password alone works. If that cookie is ever lost, a human
   has to supply the code.
-- The two projects hold **independent copies** of `user.json`. Refreshing one does not
-  refresh the other.
+- Both configs share the same `user.json`, via the single `AUTH_FILE` in `config/env.ts`
+  that `config/playwright.base.ts` wires into `use.storageState`. Refreshing it with
+  `npm run auth` refreshes the session for both `playwright.config.ts` and
+  `playwright.cleanup.config.ts`.
 
 ## Salesforce/Lightning gotchas learned the hard way
 

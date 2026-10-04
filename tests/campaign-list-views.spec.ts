@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../helpers/test';
 import { gotoObject } from '../helpers/nav';
 
 // Expected sets captured from the org on 2026-09-13. They are hardcoded on purpose:

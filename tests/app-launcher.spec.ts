@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../helpers/test';
 import { gotoObject } from '../helpers/nav';
 
 test('app launcher > Sales Console > Accounts > All Accounts > New', async ({ page }) => {
