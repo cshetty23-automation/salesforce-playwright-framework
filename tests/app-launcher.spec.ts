@@ -11,7 +11,8 @@ test('app launcher > Sales Console > Accounts > All Accounts > New', async ({ pa
   await page.getByRole('option', { name: 'Sales Console' }).click();
 
   await gotoObject(page, 'Account');
-
+ // some testing
+ 
   // List view > All Accounts
   await page.getByRole('button', { name: /select a list view/i }).click();
   await page.getByRole('option', { name: 'All Accounts', exact: true }).click();
