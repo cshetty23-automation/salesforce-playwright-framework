@@ -3,12 +3,16 @@
 // Read-only. Test records are never deleted automatically, so this is how to see what has
 // built up before deleting any: `npm run cleanup:delete` for Account, Lead and Opportunity,
 // by hand for Contact.
+//
+// Campaign is listed but no spec creates one: campaign-list-views.spec.ts needs at least one
+// active Campaign to see a populated list, so a `PW` Campaign is seeded by hand and kept on
+// purpose. Listing it makes it visible; cleanup deliberately does not cover it.
 import fs from 'fs';
 import { AUTH_FILE, ORG_URL } from '../config/env';
 import { apiFromCookies } from '../helpers/api';
 import { MARKER } from '../helpers/marker';
 
-const OBJECTS = ['Account', 'Contact', 'Lead', 'Opportunity'];
+const OBJECTS = ['Account', 'Contact', 'Lead', 'Opportunity', 'Campaign'];
 
 type Row = { Id: string; Name: string; CreatedDate: string };
 
@@ -37,6 +41,7 @@ async function main() {
   console.log(`\n${total} test record(s) in total.`);
   if (total) {
     console.log('Delete Account, Lead and Opportunity records with `npm run cleanup:delete`; Contacts by hand.');
+    console.log('Keep at least one active Campaign: campaign-list-views.spec.ts needs it.');
   }
 }
 
