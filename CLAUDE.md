@@ -127,10 +127,13 @@ Viewed`; Contact opens the **Intelligence View** at `/lightning/o/Contact/pipeli
 a different route entirely. Reports uses `/lightning/o/Report/home?queryScope=…` with a
 sidebar of `role="tab"` entries, not a list-view picker.
 
-**Some buttons are permission-gated, not absent.** Campaigns has no `New` button because
-this user lacks Create on Campaign (the Marketing User flag) — confirmed by hitting
-`/lightning/o/Campaign/new` and getting "you don't have the necessary privileges". On
-Reports, `New Report` and `New Folder` are genuinely available.
+**Some buttons are permission-gated, not absent.** Campaigns shows `New` and `Edit List`
+only when the user has the **Marketing User** flag on their user record — System
+Administrator alone is not enough. Without it, Campaign describes as not createable and
+`/lightning/o/Campaign/new` answers "you don't have the necessary privileges". The
+original org's user lacked the flag; the current org's user has it (ticked 2026-11-14),
+and `campaign-list-views.spec.ts` expects both buttons. On Reports, `New Report` and
+`New Folder` are genuinely available.
 
 **The REST API lives on the my.salesforce.com host, not the Lightning one.** The browser
 session is API-capable, but only as the `sid` cookie set for `*.my.salesforce.com`, sent as

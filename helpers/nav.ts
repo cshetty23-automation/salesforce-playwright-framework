@@ -14,8 +14,13 @@ const OBJECTS: Record<SalesforceObject, { menuItem: string; ready: (page: Page) 
   Lead: { menuItem: 'Leads', ready: heading('Leads') },
   Opportunity: { menuItem: 'Opportunities', ready: heading('Opportunities') },
   Campaign: { menuItem: 'Campaigns', ready: heading('Campaigns') },
-  // Reports has no list-view picker; its page is a sidebar of ARIA regions instead.
-  Report: { menuItem: 'Reports', ready: (page) => page.getByRole('region', { name: 'Reports' }) },
+  // Reports has no list-view picker; its page is a sidebar of ARIA regions instead. The list
+  // container beside it is *also* a region named "Reports", so the name alone matches two
+  // elements; only the sidebar's holds a tablist.
+  Report: {
+    menuItem: 'Reports',
+    ready: (page) => page.getByRole('region', { name: 'Reports' }).filter({ has: page.getByRole('tablist') }),
+  },
 };
 
 /**

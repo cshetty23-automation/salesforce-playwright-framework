@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import { test, expect } from '../helpers/test';
 import { gotoObject } from '../helpers/nav';
 
@@ -10,6 +11,12 @@ import { gotoObject } from '../helpers/nav';
 // not links and not tree items. Scoping by region is what disambiguates "Created by Me",
 // which appears under both Reports and Folders and would otherwise match two elements
 // and fail strict mode.
+//
+// The region name alone is not unique either: the list container beside the sidebar is
+// also a region named "Reports". Filtering on the tablist keeps only the sidebar's.
+const sidebar = (page: Page, region: string) =>
+  page.getByRole('region', { name: region }).filter({ has: page.getByRole('tablist') });
+
 const SIDEBAR: Array<{ region: string; tabs: string[] }> = [
   { region: 'Reports', tabs: ['Recent', 'Created by Me', 'Private Reports', 'Public Reports', 'All Reports'] },
   { region: 'Folders', tabs: ['All Folders', 'Created by Me', 'Shared with Me'] },
@@ -20,7 +27,7 @@ const SIDEBAR: Array<{ region: string; tabs: string[] }> = [
 // accessible name really is "Personalize your list view settings.", trailing full stop
 // included. Neither New Report nor New Folder is permission-gated here — New Folder
 // opens a "Create folder" dialog and New Report opens the Report Builder, unlike the
-// Campaigns New button which is blocked by a missing create privilege.
+// Campaigns New button, which needs the Marketing User flag.
 const HEADER_BUTTONS = ['New Report', 'New Folder', 'Personalize your list view settings.'];
 
 // The search box names the current view, so it is per-view rather than shared.
@@ -50,7 +57,7 @@ test('Reports exposes the expected views, buttons and links', async ({ page }) =
   // --- Sidebar -----------------------------------------------------------------
   await test.step('sidebar regions and their tabs', async () => {
     for (const { region, tabs } of SIDEBAR) {
-      const tablist = page.getByRole('region', { name: region }).getByRole('tablist');
+      const tablist = sidebar(page, region).getByRole('tablist');
       // Count catches an added view; the per-name checks catch a removed or renamed one.
       await expect(tablist.getByRole('tab')).toHaveCount(tabs.length);
       for (const name of tabs) {
@@ -62,7 +69,7 @@ test('Reports exposes the expected views, buttons and links', async ({ page }) =
   // --- Each view ---------------------------------------------------------------
   for (const view of VIEWS) {
     await test.step(`${view.region} / ${view.tab}`, async () => {
-      const tab = page.getByRole('region', { name: view.region }).getByRole('tab', { name: view.tab, exact: true });
+      const tab = sidebar(page, view.region).getByRole('tab', { name: view.tab, exact: true });
       await tab.click();
 
       await expect(page).toHaveURL(new RegExp(`queryScope=${view.scope}(\\b|$)`));
