@@ -1,7 +1,8 @@
 import { test, expect } from '../helpers/test';
 import { gotoObject } from '../helpers/nav';
 
-// Expected sets captured from the org on 2026-09-13. They are hardcoded on purpose:
+// Expected sets captured from the org on 2026-09-13; header buttons re-captured on
+// 2026-11-14 against the replacement org. They are hardcoded on purpose:
 // this spec exists to notice when the Campaigns page gains, loses or renames a list
 // view or a button, so it has to compare against a fixed baseline rather than against
 // whatever the page happens to render. When a change here is intentional, update these
@@ -21,13 +22,15 @@ const PINNED_VIEW = 'Recently Viewed';
 // Every button in the page header on the All Active Campaigns view: the view picker and
 // pin control, the three record actions, and the list toolbar.
 //
-// Notably absent: New. That is a permission gate rather than a missing button — going
-// straight to /lightning/o/Campaign/new answers with "Oops...you don't have the
-// necessary privileges to create this record", i.e. this user lacks Create on Campaign
-// (the Marketing User flag). If New ever appears here, that permission changed.
+// New is permission-gated, not always present: it only renders when the user has
+// Create on Campaign, which needs the Marketing User flag on the user record (being a
+// System Administrator is not enough). The same flag grants Edit, which is what adds
+// Edit List (inline editing) to the toolbar. The org this suite runs against has that
+// flag ticked; if New and Edit List disappear together, check it before suspecting the page.
 const HEADER_BUTTONS = [
   'Select a List View: Campaigns',
   'Pin this list view.',
+  'New',
   'Printable View',
   'Assign Label',
   'Analyze with Grid',
@@ -35,6 +38,7 @@ const HEADER_BUTTONS = [
   'Select list display',
   'Refresh',
   'Column sort',
+  'Edit List',
   'Charts',
   'Filters',
 ];
@@ -80,7 +84,4 @@ test('Campaigns exposes the expected list views and header buttons', async ({ pa
   for (const name of HEADER_BUTTONS) {
     await expect(header.getByRole('button', { name, exact: true })).toHaveCount(1);
   }
-
-  // Stated explicitly because its absence is the interesting fact, not an oversight.
-  await expect(header.getByRole('button', { name: 'New', exact: true })).toHaveCount(0);
 });
